@@ -1,0 +1,55 @@
+## AttendanceRepository
+-----------------------
+package com.cheran.student_management.repository;
+
+import com.cheran.student_management.entity.Attendance;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface AttendanceRepository extends JpaRepository<Attendance, Integer> {
+
+    List<Attendance> findByStudentStudentId(int studentId);
+}
+
+
+##CourseRepository
+-----------------
+package com.cheran.student_management.repository;
+
+import com.cheran.student_management.entity.Course;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CourseRepository extends JpaRepository<Course, Integer> {
+}
+
+##EnrollmentRepository
+---------------------
+
+package com.cheran.student_management.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.cheran.student_management.entity.Enrollment;
+import java.util.List;
+
+public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer> {
+
+    // ✅ Check if student already enrolled in a course
+    boolean existsByStudentStudentIdAndCourseCourseId(int studentId, int courseId);
+
+    // ✅ Get all enrollments for a specific student
+    List<Enrollment> findByStudentStudentId(int studentId);
+}
+
+##StudentRepository
+------------------
+
+package com.cheran.student_management.repository;
+
+import com.cheran.student_management.entity.Student;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface StudentRepository extends JpaRepository<Student,Integer>
+{
+
+}
