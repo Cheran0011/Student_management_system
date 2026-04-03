@@ -1,1 +1,178 @@
+## AttendanceController
+----------------------
+
+package com.cheran.student_management.controller;
+
+import com.cheran.student_management.entity.Attendance;
+import com.cheran.student_management.service.AttendanceService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/attendance")
+public class AttendanceController {
+
+    @Autowired
+    private AttendanceService service;
+
+    @PostMapping("/{studentId}")
+    public Attendance markAttendance(@PathVariable int studentId,
+                                     @RequestParam String status) {
+        return service.markAttendance(studentId, status);
+    }
+
+    @GetMapping
+    public List<Attendance> getAll() {
+        return service.getAllAttendance();
+    }
+
+    @GetMapping("/student/{id}")
+    public List<Attendance> getByStudent(@PathVariable int id) {
+        return service.getAttendanceByStudent(id);
+    }
+}
+
+##CourseController
+------------------
+
+package com.cheran.student_management.controller;
+
+import com.cheran.student_management.entity.Course;
+import com.cheran.student_management.repository.CourseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/courses")
+public class CourseController {
+
+    @Autowired
+    private CourseRepository repo;
+
+    @PostMapping
+    public Course addCourse(@RequestBody Course course) {
+        return repo.save(course);
+    }
+
+    @GetMapping
+    public List<Course> getAll() {
+        return repo.findAll();
+    }
+
+##EnrollmentController
+
+package com.cheran.student_management.controller;
+
+import com.cheran.student_management.dto.EnrollmentRequest;
+import com.cheran.student_management.entity.Enrollment;
+import com.cheran.student_management.service.EnrollmentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/enrollments")
+public class EnrollmentController {
+
+    @Autowired
+    private EnrollmentService service;
+
+    @PostMapping
+    public Enrollment enroll(@RequestBody EnrollmentRequest request) {
+        return service.enrollStudent(request);
+    }
+
+    @GetMapping
+    public List<Enrollment> getAllEnrollments() {
+        return service.getAllEnrollments();
+    }
+
+    @GetMapping("/student/{id}")
+    public List<Enrollment> getCoursesByStudent(@PathVariable int id) {
+        return service.getCoursesByStudent(id);
+    }
+}
+}
+
+##package com.cheran.student_management.controller;
+
+import com.cheran.student_management.entity.Student;
+import com.cheran.student_management.repository.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/students")
+public class StudentController {
+
+    @Autowired
+    private StudentRepository repo;
+
+    @PostMapping
+    public Student addStudent(@RequestBody Student student) {
+        return repo.save(student);
+    }
+
+    @GetMapping
+    public List<Student> getAll() {
+        return repo.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Student getById(@PathVariable int id) {
+        return repo.findById(id).orElse(null);
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable int id) {
+        repo.deleteById(id);
+        return "Deleted Successfully";
+    }
+}
+
+package com.cheran.student_management.controller;
+
+import com.cheran.student_management.entity.Student;
+import com.cheran.student_management.repository.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/students")
+public class StudentController {
+
+    @Autowired
+    private StudentRepository repo;
+
+    @PostMapping
+    public Student addStudent(@RequestBody Student student) {
+        return repo.save(student);
+    }
+
+    @GetMapping
+    public List<Student> getAll() {
+        return repo.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Student getById(@PathVariable int id) {
+        return repo.findById(id).orElse(null);
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable int id) {
+        repo.deleteById(id);
+        return "Deleted Successfully";
+    }
+}
 
