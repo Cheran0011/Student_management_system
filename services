@@ -1,0 +1,112 @@
+## AttendanceService
+-------------------
+
+package com.cheran.student_management.service;
+
+import com.cheran.student_management.entity.Attendance;
+import com.cheran.student_management.entity.Student;
+import com.cheran.student_management.exception.EnrollmentException;
+import com.cheran.student_management.repository.AttendanceRepository;
+import com.cheran.student_management.repository.StudentRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+public class AttendanceService {
+
+    @Autowired
+    private AttendanceRepository attendanceRepo;
+
+    @Autowired
+    private StudentRepository studentRepo;
+
+    public Attendance markAttendance(int studentId, String status) {
+
+        Student student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new EnrollmentException("Student not found"));
+
+        Attendance attendance = new Attendance();
+        attendance.setStudent(student);
+        attendance.setDate(LocalDate.now());
+        attendance.setStatus(status);
+
+        return attendanceRepo.save(attendance);
+    }
+
+    public List<Attendance> getAttendanceByStudent(int studentId) {
+        return attendanceRepo.findByStudentStudentId(studentId);
+    }
+
+    public List<Attendance> getAllAttendance() {
+        return attendanceRepo.findAll();
+    }
+}
+
+## EnrollmentService:
+--------------------
+
+package com.cheran.student_management.service;
+import com.cheran.student_management.entity.Course;
+import com.cheran.student_management.exception.EnrollmentException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.cheran.student_management.dto.EnrollmentRequest;
+import com.cheran.student_management.entity.Enrollment;
+import com.cheran.student_management.entity.Student;
+import com.cheran.student_management.repository.CourseRepository;
+import com.cheran.student_management.repository.EnrollmentRepository;
+import com.cheran.student_management.repository.StudentRepository;
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+public class EnrollmentService {
+
+    @Autowired
+    private EnrollmentRepository enrollmentRepo;
+
+    @Autowired
+    private StudentRepository studentRepo;
+
+    @Autowired
+    private CourseRepository courseRepo;
+
+    public Enrollment enrollStudent(EnrollmentRequest request) {
+
+        boolean exists = enrollmentRepo
+                .existsByStudentStudentIdAndCourseCourseId(
+                        request.getStudentId(),
+                        request.getCourseId()
+                );
+
+        if (exists) {
+            throw new EnrollmentException("Student already enrolled in this course");
+        }
+
+        Student student = studentRepo.findById(request.getStudentId())
+                .orElseThrow(() -> new EnrollmentException("Student not found"));
+
+        Course course = courseRepo.findById(request.getCourseId())
+                .orElseThrow(() -> new EnrollmentException("Course not found"));
+
+        Enrollment enrollment = new Enrollment();
+        enrollment.setStudent(student);
+        enrollment.setCourse(course);
+        enrollment.setEnrollmentDate(LocalDate.now()); // set enrollment date
+
+        return enrollmentRepo.save(enrollment);
+    }
+
+    public List<Enrollment> getAllEnrollments() {
+        return enrollmentRepo.findAll();
+    }
+
+    public List<Enrollment> getCoursesByStudent(int studentId) {
+        return enrollmentRepo.findByStudentStudentId(studentId);
+    }
+}
+
